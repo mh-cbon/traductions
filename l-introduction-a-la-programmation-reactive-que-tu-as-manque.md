@@ -94,9 +94,21 @@ prennons le temps de les regarder de plus près en commençant avec l'exemple du
 
 ![Flux d'evenement de clique](http://i.imgur.com/cL4MOsS.png)
 
-Un flux est une séquence d'évènement à venir ordonné dans le temps. un flux peut émettre trois types de choses : Une valeur (avec un type), une erreur, ou un signal de terminaison. Pour le moment, considérez que le flux est terminé lorsque la fenêtre de la vue contenant ce bouton est fermée.
+Un flux est une séquence d'évènements à venir ordonnés dans le temps.
+Un flux peut émettre trois types de choses : Une valeur (avec un type),
+une erreur, ou un signal de terminaison.
+Pour le moment, considérez que le flux est terminé lorsque
+la fenêtre de la vue contenant ce bouton est fermée.
 
-La capture de ces évènements est complètement asynchrone en définissant, une fonction qui s'executera lorsqu'une valeur est écrite sur le flux, une fonction qui sera déclenchée si une erreure survient, et une dernière fonction terminale lorsque le flux aura complété son processus. Certaines fois, les deux dernières fonctions ne sont pas déclarées et l'on pourra se concentrer sur la fonction de transformation des valeurs. L'action d'"écouter" un flux est appelé "abbonnement". Les fonctions que nous délcarons sont des "observateurs". Le flux est le "sujet" que l'on observe. C'est précisément le patron de conception [Observateur](https://fr.wikipedia.org/wiki/Observateur_%28patron_de_conception%29).
+La capture de ces évènements est complètement asynchrone en définissant,
+une fonction qui s'executera lorsqu'une valeur est écrite sur le flux,
+une fonction qui sera déclenchée si une erreure survient,
+et une dernière fonction terminale lorsque le flux aura complété son processus.
+Certaines fois, les deux dernières fonctions ne sont pas déclarées et l'on pourra
+se concentrer sur la fonction de transformation des valeurs.
+L'action d'"écouter" un flux est appelé "abonnement".
+Les fonctions que nous délcarons sont des "observateurs".
+Le flux est le "sujet" que l'on observe. C'est précisément le patron de conception [Observateur](https://fr.wikipedia.org/wiki/Observateur_%28patron_de_conception%29).
 
 Une autre manière d'écrire ce diagrame est d'utilsier ASCII, que nous utliserons durant ce tutoriel :
 ```
@@ -104,12 +116,23 @@ Une autre manière d'écrire ce diagrame est d'utilsier ASCII, que nous utlisero
 
 a, b, c, d les signaux émis
 X est une erreur
-| le sginal de 'terminaison0'
+| le sginal de 'terminaison'
 ---> la ligne du temps
 ```
-Puisque cela nous est déjà tellement familier, et que je ne veux pas vous vous ennuyiez, faisons quelque chose de nouveau : nous allons créer un flux d'évènement de clique depuis un flux d'évenèment de clique existant.
+Puisque cela nous est déjà tellement familier,
+et que je ne veux pas vous vous ennuyiez,
+faisons quelque chose de nouveau : nous allons créer un flux d'évènements
+de clique depuis un flux d'évenèments de clique existant.
 
-Tout d'abord, créons un flux de comptage `counterStream` qui indiquera le nombre de fois qu'un bouton à été cliqué. Dans la plupart des librairires Réactive, chaque flux possède à fonctions qui lui sont attachés tels que `map`, `filter`, `scan` ect. Lorsque vous appelez une de ces fonctions, comme ceci `clickStream.map(f)`, celle ci crée et retourne un nouveau flux qui consomme le flux précédent. Ces fonctions ne modifient jamais le flux original. C'est un propriété que l'on appelle "**immutabilité**", et cela va de pair avec la programmation Réactive comme 2 et 2 font 4. Cela nous permet de chaîner les appels de fonctions ainsi : `clickStream.map(f).scan(g)` :
+Tout d'abord, créons un flux de comptage `counterStream` qui indiquera
+le nombre de fois qu'un bouton a été cliqué. Dans la plupart des librairires Réactive,
+chaque flux possède des fonctions qui lui sont attachés tels que `map`, `filter`, `scan` ect.
+Lorsque vous appelez une de ces fonctions, comme ceci `clickStream.map(f)`,
+celle ci crée et retourne un nouveau flux qui consomme le flux précédent.
+Ces fonctions ne modifient jamais le flux original.
+C'est une propriété que l'on appelle "**immutabilité**", et cela va de pair avec
+la Programmation Réactive, comme 2 et 2 font 4.
+Cela nous permet de chaîner les appels de fonctions ainsi : `clickStream.map(f).scan(g)` :
 
 ```
   clickStream: ---c----c--c----c------c-->
