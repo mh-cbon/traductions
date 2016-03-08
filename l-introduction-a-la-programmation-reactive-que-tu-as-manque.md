@@ -70,13 +70,27 @@ Allons droit au but.
 
 #### La Programmation Réactive consiste à programmer des flux de données asynchrone
 
-D'une certaine manière il n'y à rien de nouveau la dedans. Les bus d'évènements ou
-même le plus simple évènement de clique sont des flux de données asynchrone, que l'on peut écouter et ainsi modifier l'état du programme.
-La Programmation Réactive n'est qu'une formalisation de cela. On peut créer des flux de données depuis n'importe quoi, pas uniquement des cliques de souris. Les flux sont disponible partout et ne coûtent rien à l'instanciation, il n'y a rien qui ne puisse être un flux : variables, évènements utilisateurs, propriétés, caches, structure de donées, ect. Par exemple imaginer que votre Twitter soit un flux de données de la même manière que les cliques le sont. Vous pouvez vous y abonner, et réagir de manière adéquat.
+D'une certaine manière il n'y a rien de nouveau la dedans. Les bus d'évènements ou
+même le plus simple évènement de clique sont des flux de données asynchrone,
+que l'on peut écouter et ainsi modifier l'état du programme.
+La Programmation Réactive n'est qu'une formalisation de cela.
+On peut créer des flux de données depuis n'importe quoi,
+pas uniquement des cliques de souris. Les flux sont disponible partout
+et ne coûtent rien à l'instanciation, il n'y a rien qui ne puisse être un
+flux : variables, évènements utilisateur, propriétés, caches, structure de donées, ect.
+Imaginer par exemple que votre Twitter soit un flux de données
+de la même manière que les cliques le sont. Vous pourriez vous y abonner, et réagir de manière adéquat.
 
-En plus des flux, des outils sont mis à votre dispositions pour combiner, créer et filtrer ces flux. C'est là que le mot "Fonctionnel" entre en jeu. Un flux peut être consommer en entré d'un autre flux. L'on peut même utiliser plusieurs flux pour former un nouveau flux. Vous pouvez fusionner deux flux. Ou bien encore filtrer un flux pour obtenir un nouveau flux des seuls évènements qui vous intéressent. Il est aussi possible de créer un flux qui est le résultat de la transformation des valeurs d'un autre flux.
+En plus des flux, des outils sont mis à votre dispositions pour combiner,
+créer et filtrer ces flux. C'est là que le mot "Fonctionnel" entre en jeu.
+Un flux peut être consommer en entré d'un autre flux.
+ L'on peut même utiliser plusieurs flux pour former un nouveau flux.
+ Vous pouvez fusionner deux flux. Ou bien encore filtrer un flux pour obtenir
+ un nouveau flux des seuls évènements qui vous intéressent.
+ Il est aussi possible de créer un flux qui est le résultat de la transformation des valeurs d'un autre flux.
 
-Puisque les flux sont tellement important à la Programmation Réactive, prennons le temps de les regarder de plus près en commençant avec l'exemple du flux d'évenement de clique.
+Puisque les flux sont tellement important à la Programmation Réactive,
+prennons le temps de les regarder de plus près en commençant avec l'exemple du flux d'évenements de clique.
 
 ![Flux d'evenement de clique](http://i.imgur.com/cL4MOsS.png)
 
