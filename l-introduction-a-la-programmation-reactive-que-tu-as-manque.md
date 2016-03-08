@@ -54,11 +54,17 @@ que vous en aurez fini avec cet article. J'espère que cela vous aidera.
 
 # "Qu'est ce que la Programmation Réactive ?"
 
-Il y à pleins de mauvaises explications et définitions sur l'Internet. Wikipedia est
-trop générique et théorique, comme d'habitude. Les réponses lapidaires de Stackoverflow ne
-sont évidemment pas utile aux débutants. Le [Reactive manifesto](http://www.reactivemanifesto.org/fr) ressemble aux genres de documents que l'on
-montre à la hiérarchie. La terminologie de microsoft "Rx = Sujets + LINQ + Ordonnanceurs"
-est bien trop lourde et tellement particulière à l'environnement microsoft que la plupart d'entre nous restons coi. Les termes tels que "reactif" et "propagation des changements" n'apporte pas grand chose de plus à notre modèle MV* traditionnel et son implémentation dans nos langages favoris. Evidemment que nos vues réagissent à nos modèles. Si ce n'était pas le cas, rien ne s'afficherait à l'écran.
+Il y a pleins de mauvaises explications et définitions sur l'Internet. Comme d'habitude Wikipedia est
+trop générique et théorique. Les réponses lapidaire de Stackoverflow ne
+sont évidemment pas utile aux débutants.
+Le [Manifeste Reactif](http://www.reactivemanifesto.org/fr) ressemble aux genres
+de documents que l'on montre à sa hiérarchie. La terminologie de microsoft
+"Rx = Sujets + LINQ + Ordonnanceurs" est bien trop lourde et tellement
+particulière à l'environnement microsoft que la plupart d'entre nous restons coi.
+Les termes tels que "reactif" et "propagation des changements" n'apporte
+pas grand chose de plus à notre modèle MV* traditionnel et son implémentation
+dans nos langages favoris. Evidemment que nos vues réagissent à nos modèles.
+Si ce n'était pas le cas, rien ne s'afficherait à l'écran.
 
 Allons droit au but.
 
