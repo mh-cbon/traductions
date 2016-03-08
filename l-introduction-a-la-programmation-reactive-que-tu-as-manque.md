@@ -1,23 +1,25 @@
 # Préambule
 
 Url original : https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+
 Auteur : [André Staltz](https://github.com/staltz)
+
 Licence : [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/)
-Ntdt : J'emploierais le tutoiement, j'essaierais de ne pas faire trop de mot à mot, mais bon je ne suis pas un traducteur professionnel. Il y aura probablement pleins de fautes, des tournues mal venues, ou bien encore des traductions maladroite. La bonen nouvelle c'est que vous pouvez éditer le document ar vous même et proposer des corrections.
+
+Ntdt : J'emploierais le tutoiement, j'essaierais de ne pas faire trop de mot à mot, mais bon je ne suis pas un traducteur professionnel. Il y aura probablement pleins de fautes, des tournues mal venues, ou bien encore des traductions maladroite. La bonne nouvelle c'est que vous pouvez éditer le document par vous même et proposer des corrections.
 
 # L'introduction à la programmation réactive que tu as manqué
 
 _____
 Ce tutoriel est aussi disponible en vidéos
 
-Si tu préfères regarder des tutoriels vidéos avec des sessions de programmation en directe, jettes  un oril à cette séries que j'ai enregistré avec le même contenu que cet article : [Egghead.io - Introduction to Reactive Programming](https://egghead.io/series/introduction-to-reactive-programming).
+Si tu préfères regarder des tutoriels vidéos avec des sessions de programmation en directe, jettes  un oeil à cette série que j'ai enregistré avec le même contenu que cet article : [Egghead.io - Introduction to Reactive Programming](https://egghead.io/series/introduction-to-reactive-programming).
 _____
 
-Donc tu es curieux au sujet de cette nouveau truc appelé Programmation réactive, plus particulièrement ces adaptations tels que Rx, Bacon.js et les autres.
+Donc tu es curieux au sujet de ce nouveau truc appelé la Programmation Réactive, plus particulièrement ses adaptations tels que Rx, Bacon.js et autres.
 
 Apprendre est une tâche difficile, plus encore lorsque les bonnes ressources sont manquante.
-Lorsque j'ai débuté, j'ai recherché des tutoriels. Je n'ai pu trouver qu'une poignée de ressources utiles, mais elles ne faisaient qu'effleurer la surface du problème
-et ne se sont jamais aller en profondeur. Les documentation d'API ne sont souvent
+Lorsque j'ai débuté, j'ai recherché des tutoriels. Je n'ai pu trouver qu'une poignée de ressources utiles, mais elles ne faisaient qu'effleurer la surface du problème et ne se sont jamais aller en profondeur. Les documentation d'API ne sont souvent
 que de peu d'aide pour comprendre un problème. Honnêtement, regardes un peu cela :
 
     Rx.Observable.prototype.flatMapLatest(selector, [thisArg])
@@ -28,18 +30,27 @@ que de peu d'aide pour comprendre un problème. Honnêtement, regardes un peu ce
 
 Ndt : En anglais c'est déjà n'importe quoi, en français c'est vraiment du charabia.
 
-    Projects each element of an observable sequence into a new sequence of observable sequences by incorporating the element's index and then transforms an observable sequence of observable sequences into an observable sequence producing values only from the most recent observable sequence.
+    Projects each element of an observable sequence into a new sequence of
+    observable sequences by incorporating the element's index and then transforms
+    an observable sequence of observable sequences into an observable sequence
+    producing values only from the most recent observable sequence.
 
-Mais encore...
+Evidemment !
 
-J'ai lu deux livres, l'un d'entre eux nétait qu'une vue générale, tandis que l'autre
-expliqué comment utiliser la Programmation Réactive. J'ai fini par apprendre la
-Programmation Réactive par la pratique. Lorsque je travaillé pour Futurice j'ai
-eu à utiliser ce paradigme dans de vrai projet, et j'ai reçu le support de mes collègues
+J'ai lu deux livres, l'un d'entre eux n'était qu'une vue générale, tandis que l'autre
+expliquait comment utiliser la Programmation Réactive. J'ai fini par apprendre la
+Programmation Réactive par la pratique. Lorsque je travaillais pour Futurice j'ai
+eu à utiliser ce paradigme dans de vrai projets, et j'ai reçu le support de mes collègues
 lorsque j'avais des difficultées.
 
-Le plus difficile dans ce parcourt est d'apprendre à penser et réfléchir Réactif. Le gros de cet effort consiste à oublier les vieux paradigmes impératifs de nos habitudes de programmation, pour forcer notre cerveau à travailler dans ce nouveau mode de pensée. Je n'ai pas trouvé de quide pour cela sur l'Internet, je crois cependant que cela nécessite un
-tutoriel concret et pratique sur cette approche et la manière de penser Réactif afin que chacun puisse débuter. La documentation de la librairie vous fournira de plus amples détails dès lros que vous en aurez fini avec cet article. J'espère que cela vous aidera.
+Le plus difficile dans ce parcours est d'apprendre à penser et réfléchir Réactif.
+Le gros de cet effort consiste à oublier les vieux paradigmes impératifs hérités
+de nos habitudes de programmation, pour forcer notre cerveau à travailler dans
+ce nouveau mode de pensée. Je n'ai pas trouvé de guide pour cela sur l'Internet,
+je crois cependant que cela nécessite un tutoriel concret et pratique sur
+cette approche et la manière de penser Réactif afin que chacun puisse débuter.
+La documentation de la librairie vous fournira de plus amples détails dès lors
+que vous en aurez fini avec cet article. J'espère que cela vous aidera.
 
 # "Qu'est ce que la Programmation Réactive ?"
 
@@ -47,7 +58,7 @@ Il y à pleins de mauvaises explications et définitions sur l'Internet. Wikiped
 trop générique et théorique, comme d'habitude. Les réponses lapidaires de Stackoverflow ne
 sont évidemment pas utile aux débutants. Le [Reactive manifesto](http://www.reactivemanifesto.org/fr) ressemble aux genres de documents que l'on
 montre à la hiérarchie. La terminologie de microsoft "Rx = Sujets + LINQ + Ordonnanceurs"
-est bien trop lourde et tellement particulière à l'environnement microsoft que la plupart d'entre nous restons coi. Les termes tels que "reactif" et "propagation des changements" n'apporte pas grand chose de plus à notre modèle MV* traditionnel et son implémentation dans nos languages favoris. Evidemment que nos vues réagissent à nos modèles. Si ce n'était pas le cas, rien ne s'afficherait à l'écran.
+est bien trop lourde et tellement particulière à l'environnement microsoft que la plupart d'entre nous restons coi. Les termes tels que "reactif" et "propagation des changements" n'apporte pas grand chose de plus à notre modèle MV* traditionnel et son implémentation dans nos langages favoris. Evidemment que nos vues réagissent à nos modèles. Si ce n'était pas le cas, rien ne s'afficherait à l'écran.
 
 Allons droit au but.
 
@@ -110,7 +121,7 @@ Les applications modernes abondent d'évènements en temps réél de toutes sort
 
 Commençons des choses sérieux désormais. Un exemple concret avec un guide sur la manière de penser la Programmation Réactive. Aucun exemples de synthèses, pas de concepts à moité expliqué. A la fin de ce tutorial nous aurons implémenté un code fonctionnel, en comprenenant chaque composant.
 
-J'ai choisit Javascript et RxJS comme outils pour cette démonstration, la raison : Javascript est le language le populaire en ce moment, et la famille des librairies Rx* est disponible pour plusieurs languages (.NET, Java, Scala, Clojure, JavaScript, Ruby, Python, C++, Objective-C/Cocoa, Groovy, etc). Donc quelque votre outil, vous pourrez y apppliquer ce concepts.
+J'ai choisit Javascript et RxJS comme outils pour cette démonstration, la raison : Javascript est le langage le populaire en ce moment, et la famille des librairies Rx* est disponible pour plusieurs langages (.NET, Java, Scala, Clojure, JavaScript, Ruby, Python, C++, Objective-C/Cocoa, Groovy, etc). Donc quelque votre outil, vous pourrez y apppliquer ce concepts.
 
 # Implémenter une boîte de suggestions "Qui suivre"
 
