@@ -573,7 +573,9 @@ var suggestion1Stream = responseStream
   });
 ```
 
-Les autres, `suggestion2Stream` et `suggestion3Stream`  seront simplement dupliquer depuis `suggestion1Stream`. Ce n'est pas DRY, mais nous le garderons ainsi durant ce tutoriel, laissant cela en exercice pour le lecteur.
+Les autres, `suggestion2Stream` et `suggestion3Stream`  seront simplement
+dupliquer depuis `suggestion1Stream`. Ce n'est pas DRY, mais nous le garderons
+ainsi durant ce tutoriel, laissant cela en exercice pour le lecteur.
 
 Au lieu de générer l'affiche des résultats dans le flux `responseStream`, nous faisons ainsi :
 
@@ -583,7 +585,9 @@ suggestion1Stream.subscribe(function(suggestion) {
 });
 ```
 
-Retournons en à "lors du rafraichissement, effacées les suggestions", nous pouvons désormais simplement trasnformé les cliques de rafraichissement en objet de suggestion `null`, et include cela dans notre flux `suggestion1Stream`
+Retournons en à "lors du rafraichissement, effacer les suggestions",
+nous pouvons désormais simplement trasnformer les cliques de rafraîchissement
+en objet de suggestion `null`, et inclure cela dans notre flux `suggestion1Stream`
 
 ```javascript
 var suggestion1Stream = responseStream
@@ -596,7 +600,8 @@ var suggestion1Stream = responseStream
   );
 ```
 
-Ainsi lors du rendu, nous pouvons interpreter `null` comme "pas de données", donc masqué l'élément correspondant.
+Ainsi lors du rendu, nous pouvons interpreter `null`
+comme "pas de données", donc masquer l'élément correspondant.
 
 ```javascript
 suggestion1Stream.subscribe(function(suggestion) {
@@ -622,7 +627,7 @@ refreshClickStream: ----------o--------o---->
 ```
 Où `N` correspond à `null`.
 
-Pour aller plus loin, nous pouvons maintenant affiché des suggestions vide au démarrage de l'application.
+Pour aller plus loin, nous pouvons maintenant afficher des suggestions vide au démarrage de l'application.
 Nous ferons cela en ajoutant `startWith(null)` aux flux de suggestions:
 
 ```javascript
@@ -637,7 +642,7 @@ var suggestion1Stream = responseStream
   .startWith(null);
 ```
 
-Ce qui produire ce résultat:
+Ce qui produira ce résultat:
 
 ```
 refreshClickStream: ----------o---------o---->
@@ -650,8 +655,10 @@ refreshClickStream: ----------o---------o---->
 
 ## Fermer une suggestion et utiliser le cache
 
-Il y à une fonctionnalité manquante. Chaque suggestion devrait avoir un bouton `x`, pour fermer celle ci, et charger une nouvelle suggestion à sa place.
-A première vue, vous pourriez pensez que c'est suffisant de faire une nouvelle requete lorsque ce bouton est cliqué.
+Il y à une fonctionnalité manquante. Chaque suggestion devrait avoir un
+bouton `x`, pour fermer celle ci, et charger une nouvelle suggestion à sa place.
+A première vue, vous pourriez pensez que c'est suffisant de faire
+une nouvelle requete lorsque ce bouton est cliqué.
 
 ```javascript
 var close1Button = document.querySelector('.close1');
@@ -666,9 +673,17 @@ var requestStream = refreshClickStream.startWith('startup click')
   });
 ```
 
-Ceci ne fonctionne pas. Ceci fermera est rechargera toutes les suggestions, au lieu de s'appliquer à l'élément désiré. Il y à différentes manières de résoudre cela, et pour garder cela intéressant, nous allons résoudre cela en ré utilisant les réponses des requetes dja effectuées. L'API retourne 100 utilisateurs alors que nous n'en consommons que 3, il reste donc beaucoup de lignes disponible.
+Ceci ne fonctionne pas. Ceci fermera et rechargera toutes les suggestions,
+au lieu de s'appliquer uniquement à l'élément désiré. Il y a différentes manières
+de résoudre cela, et pour garder cela intéressant, nous allons résoudre ce problème
+en ré utilisant les réponses des requêtes déjà effectuées.
+L'API retourne 100 utilisateurs alors que nous n'en consommons que 3,
+il reste donc beaucoup de lignes disponible.
 
-Encore une fois, réfléchissons avec des flux. Lorsque un évènement de clique `close1` survient, nous voulons utilier la réponse _la plus récemment émise_ sur `responseStream` pour obtenir un utilisateur au hasard depuis la liste disponible. Ainsi:
+Encore une fois, réfléchissons avec des flux.
+Lorsque un évènement de clique `close1` survient, nous voulons utilier
+la réponse _la plus récemment émise_ depuis `responseStream` pour obtenir un
+utilisateur au hasard dans la liste disponible. Ainsi:
 
 ```
     requestStream: --r--------------->
@@ -677,7 +692,12 @@ close1ClickStream: ------------c----->
 suggestion1Stream: ------s-----s----->
 ```
 
-Avec Rx* il y à une fonction de combinaison appelé  [`combineLatest`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypecombinelatestargs-resultselector) qui semble faire ce dont nous avons besoin. Celle ci prend deux flux A et B en paramètre, et à chaque fois qu'un des flux émets une valeur, `combineLatest` rassemble les deux valeurs plus récentes `a` et `b` de chaque flux et écrit une valeur tels que `c = f(x,y)`, où `f` est une fonction à définir. C'est plus simple avec un diagramme :
+Avec Rx* il y à une fonction de combinaison appelée  [`combineLatest`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypecombinelatestargs-resultselector) qui semble faire ce dont nous avons besoin.
+Celle ci prend deux flux A et B en paramètre,
+et à chaque fois qu'un des flux émet une valeur, `combineLatest` rassemble
+les deux valeurs les plus récente `a` et `b` de chaque flux et écrit une valeur
+tels que `c = f(x,y)`, où `f` est une fonction à définir.
+ C'est plus simple avec un diagramme :
 
 
 ```
@@ -689,7 +709,13 @@ stream B: -----b----c--------d-------q---->
 où f est une fonction de transformation de casse en majsucule
 ```
 
-Nosu pouvons appliquer `combineLatest()` à `close1ClickStream()` et `responseStream()`, ainsi à chaque fois que le bouton `close` est cliqué, nous obtiendrons la dernière réponse émise et nous pourrons écrire une nouvelle valeur sur `suggestion1Stream`. N'oublison pas, `combineLatest()` est symétrique : A chaque fois qu'une réponse est émise depuis `responseStream()`, cela déclenchera la combinaison avec le dernier clique du bouton `close` pour produire une nouvelle suggestion. eci est intéresant ar cela nous permet de simpliier notre code précédent pour `suggestion1Stream`
+Nous pouvons appliquer `combineLatest()` à `close1ClickStream()` et `responseStream()`,
+ ainsi à chaque fois que le bouton `close` est cliqué, nous obtiendrons la dernière
+  réponse émise et nous pourrons écrire une nouvelle valeur sur `suggestion1Stream`.
+  N'oublison pas, `combineLatest()` est symétrique : A chaque fois qu'une réponse est émise
+  depuis `responseStream()`, cela déclenchera la combinaison avec
+  le dernier clique du bouton `close` pour produire une nouvelle suggestion.
+  Ceci est intéresant car cela nous permet de simpliier notre code précédent pour `suggestion1Stream`
 
 
 ```javascript
@@ -705,9 +731,16 @@ var suggestion1Stream = close1ClickStream
   .startWith(null);
 ```
 
-Une pièce du puzzle est toujours manquant. `combineLatest()` utilise les deux sources les plus récentes, mais si l'une de ces sources n'à pas émit de valeur, alors `combineLatest()` ne produira aucun évènement sur le flux de sortie. Si vous vérifier le diagramme au dessus, vous verrez qu'il n'y à pas de valeur de sortie lorsque le premier flux emet la valeur `a`. C'est seulement lorque la valeur `b` est émise que `combineLatest()` émet sa première valeur de sortie.
+Une pièce du puzzle est toujours manquante. `combineLatest()` utilise les deux
+sources les plus récente, mais si l'une des deux sources n'à pas émit de valeur,
+alors `combineLatest()` ne produira aucun évènement sur le flux de sortie.
+Si vous vérifier le diagramme au dessus, vous verrez qu'il n'y a pas de valeur de sortie
+lorsque le premier flux emet la valeur `a`. C'est seulement lorsque
+la valeur `b` est émise que `combineLatest()` émet sa première valeur de sortie.
 
-Différentes possiblités s'offrent à nous pour résoudre cela, et nous allons prendre la plus simple qui consistera à simuler un clique sur le bouton 'fermer' au démarrage de l'application :
+Différentes possiblités s'offrent à nous pour résoudre cela, et nous allons
+prendre la plus simple qui consistera à simuler un clique sur le bouton 'fermer'
+au démarrage de l'application :
 
 ```javascript
 var suggestion1Stream = close1ClickStream.startWith('startup click') // we added this
@@ -768,22 +801,60 @@ suggestion1Stream.subscribe(function(suggestion) {
 });
 ```
 
-**vous pouvez voir l'exemple fonctionner ici http://jsfiddle.net/staltz/8jFJH/48/**
+**Vous pouvez voir l'exemple fonctionner ici http://jsfiddle.net/staltz/8jFJH/48/**
 
-Ce bout de code est petit mais dense : Il peut gérer de multiples évènement en respectant la séparation des responsabilités, et même utiliser des réponses du cache. Le style fonctionnel rend le code plus concis et délcaratif que ele paradigme impératif : nous ne donnons pas des séquences d'instructions à éxecuter, nous décrivons **ce que chaque chose est** en définissant les rélations entre les flux. Actuellement, avec Rx nous avons décrit que _`suggestion1Stream` **est** le flux combiné de `close 1` avec un utilisateur de la dernière réponse, par ailleurs que celle ci est `null` lorsque le `rafraichissement` ou le démarrage de l'application survient_
+Ce bout de code est petit mais dense : Il peut gérer de multiples évènement en
+respectant la séparation des responsabilités, et même utiliser des réponses du cache.
+Le style fonctionnel rend le code plus concis et délcaratif que le paradigme
+impératif : nous ne donnons pas des séquences d'instructions à éxecuter,
+nous décrivons **ce que chaque chose est** en définissant les rélations entre
+les flux. Actuellement, avec Rx nous avons décrit que _`suggestion1Stream` **est**
+le flux combiné de `close 1` avec un utilisateur de la dernière réponse,
+par ailleurs que celle ci est `null` lorsque le `rafraichissement`
+ou le démarrage de l'application survient_
 
-Remarquez par ailleurs à quel point les instructions usuelles tels que `if`, `else`, `for`, `while` et les fonctions de rappels pour le control de flot sont absente. Vous pourriez même supprimer les `if`, `else` présent dans la fonction `subscribe()` en faisant appel à la méthode `filter()` si vous le souhaitiez (encore je laisse cela en exercice pour le lecteur). Avec Rx, nous des fonctions de flux tels que `map()`, `filter()`, `scan()`, `merge()`, `combineLatest()`, `startsWith()`, et bien plus encore pour controler le flot d'evenement du programme. Ces outils vous donne plus de pouvoir avec moins de code.
+Remarquez par ailleurs à quel point les instructions usuelles
+telles que `if`, `else`, `for`, `while` et les fonctions de rappels pour le
+contrôle de flot sont absente. Vous pourriez même supprimer les `if`, `else`
+présent dans la fonction `subscribe()` en faisant appel à la méthode `filter()`
+si vous le souhaitiez (encore une fois je laisse cela en exercice au lecteur).
+Avec Rx, nous disposons de fonctions de flux tels que `map()`, `filter()`,
+`scan()`, `merge()`, `combineLatest()`, `startsWith()`, et bien plus encore
+pour contrôler le flot d'évènement du programme.
+Ces outils vous donne plus de pouvoir avec moins de code.
 
 ## Continuer votre découverte
 
-Si vous pensez que Rx sera votre framework pour la Programmation Réactive, prennez le temps de mieux connaître [l'anorme liste de fonctions](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) poru transformer, combiner, créer des `Observable`.
-Si vous désirez comprendre ces fonctions avec des diagrammes de flux, jeter un oeil à [la très utile documentation RxJava avec ces diagrammes](https://github.com/Netflix/RxJava/wiki/Creating-Observables). Si jamais vous veniez à être bloqué, dessinez un diagramme, réfléchissez y, regarder la longue liste de fonctions, et réfléchissez encore. Cette méthode c'est révélée efficace pour mon apprentissage.
+Si vous pensez que Rx sera votre framework pour la Programmation Réactive,
+prennez le temps de mieux connaître [l'énorme liste de fonctions](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)
+pour transformer, combiner, créer des `Observable`.
+Si vous désirez comprendre ces fonctions avec des diagrammes de flux,
+jeter un oeil à [la très utile documentation de RxJava avec ces diagrammes](https://github.com/Netflix/RxJava/wiki/Creating-Observables).
+Si jamais vous veniez à être bloqué, dessinez un diagramme, réfléchissez y,
+regarder la longue liste de fonctions, et réfléchissez encore.
+Cette méthode c'est révélée efficace pour mon apprentissage.
 
-Dès que vous commencerez à comprendre la programmation avec Rx*, il est absolument vital de comprendre le concept de [Chaud Vs Froid `Obersvable`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/creating.md#cold-vs-hot-observables). Si vous ignorez cela, il vous reviendra en pleine figure. Vous avez était prévenu. Améliorez vos compétences en apprennant la vrai programmation fonctionnelle, et en comprenant les comportements spécifique qui affectent Rx*.
+Dès que vous commencerez à comprendre la programmation avec Rx*, il est
+absolument vital de comprendre le concept d'[`Obersvable` Chaud ou Froid](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/creating.md#cold-vs-hot-observables).
+Si vous ignorez cela, il vous reviendra en pleine figure. Vous avez était prévenu.
+Améliorez vos compétences en apprennant la vrai Programmation Fonctionnelle,
+et en comprenant les comportements spécifique qui affectent Rx*.
 
-Cependant la programmation Réactive ce n'est pas seuelemnt Rx*. Il y à [Bacon.js](http://baconjs.github.io/) qui est très intuitif, sans les bizarreries de Rx*.  Le [langage Elm](http://elm-lang.org/) dans sa propre catégorie : Un **langage** de Programmation Réactive Fonctionnel qui est compilé en JavaScript + HTML + CSS, et apporte une fonctionnalité de [debuggage dans le temps](http://debug.elm-lang.org/). Impressionnant.
+Cependant la Programmation Réactive ce n'est pas seulemnt Rx*.
+Il y à [Bacon.js](http://baconjs.github.io/) qui est très intuitif,
+sans les bizarreries de Rx*.  Le [langage Elm](http://elm-lang.org/) dans sa propre catégorie :
+Un **langage** de Programmation Réactive Fonctionnel qui est compilé
+en JavaScript + HTML + CSS, et qui apporte une
+fonctionnalité de [debuggage dans le temps](http://debug.elm-lang.org/).
+Impressionnant.
 
-Rx fonctionne bien avec les application clientes qui utilisent beaucoup d'évènement. Mais ce n'est pas uniquement à réserver pour la partie client, il fonctionne très bien pour les backends et les bases de données. En fait, [RxJava est un composant clef pour permettre la programmation concurrente dans les API de NetFlix](http://techblog.netflix.com/2013/02/rxjava-netflix-api.html). Rx n'est pas un framework pour un seul type d'application ou de langage. C'est un paradigme à part entiere que vous pouvez utilser des que des évènements sont en jeux.
+Rx fonctionne bien avec les applications cliente qui utilisent beaucoup d'évènements.
+Mais ce n'est pas uniquement réserver à la partie client,
+il fonctionne très bien pour les backends et les bases de données.
+En fait, [RxJava est un composant clef pour permettre la programmation concurrente dans les API de NetFlix](http://techblog.netflix.com/2013/02/rxjava-netflix-api.html).
+Rx n'est pas un framework pour un seul type d'application ou un seul langage.
+C'est un paradigme à part entière que vous pouvez utilser dès que des évènements
+sont en jeux.
 
 Si ce tutoriel vous aide, [tweetez le](https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fgist.github.com%2Fstaltz%2F868e7e9bc2a7b8c1f754%2F&amp;text=The%20introduction%20to%20Reactive%20Programming%20you%27ve%20been%20missing&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fgist.github.com%2Fstaltz%2F868e7e9bc2a7b8c1f754&amp;via=andrestaltz).
 
