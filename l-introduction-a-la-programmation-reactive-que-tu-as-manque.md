@@ -142,52 +142,109 @@ Cela nous permet de chaîner les appels de fonctions ainsi : `clickStream.map(f)
 counterStream: ---1----2--3----4------5-->
 ```
 
-La fonction `map(f)` remplace (dans le nouveau flux) chaque valeur écrite par le résultat de l'appel de la fonction `f` que vous aurez fournit. Dans notre exemple, nous transformons les cliques en nombre de valeur `1`. `scan(g)` est une fonction qui aggrège les valeurs reçues, tels que `x = g(accumulated, current)`, où `g` est une simple fonction d'addition. Finalement, `counterStream` émettra le nombre total de clique à chaque qu'un nouvea clique sera émis.
+La fonction `map(f)` remplace (dans le nouveau flux) chaque valeur écrite
+par le résultat de l'appel de la fonction `f` que vous aurez fournit.
+Dans notre exemple, nous transformons les cliques en nombre de valeur `1`.
+`scan(g)` est une fonction qui aggrège les valeurs reçues,
+tels que `x = g(accumulated, current)`, où `g` est une simple fonction d'addition.
+Finalement, `counterStream` émettra le nombre total de clique à chaque fois
+qu'un nouveau clique sera émis.
 
-Pour vous montrer le vrai pouvoir de la Programmation Réactive, disons que maintenant nous souhaitont avoir un flux des `double-clicks` uniquement. Pour rendre cela encore plus intéressant, disons que notre nouveau flux considerera les `triple-clicks` comme des `double-clicks`, et même plus généralement de multiple cliques consécutifs. Maintenant, prenez une grande inspiration et imaginer deux minutes ce à quoi cela ressemblerait d'une manière traditionnelle. Je parie que cela vous semble avoir mauvaise allure et que vous devriez sûrement avoir de pultipels variable pour garder une trace de l'état du programme en plus de jouer avec des intervalles de temps.
+Pour vous montrer le vrai pouvoir de la Programmation Réactive, disons maintenant
+que nous souhaitont avoir un flux des `double-clicks` uniquement.
+Pour rendre cela encore plus intéressant, disons que notre nouveau flux considerera
+ les `triple-clicks` comme des `double-clicks`, et même plus généralement
+ de multiple cliques consécutifs. Maintenant, prenez une grande inspiration
+ et imaginer deux minutes ce à quoi cela ressemblerait d'une manière traditionnelle.
+ Je parie que cela vous semble avoir mauvaise allure et que vous devriez sûrement
+ avoir de multiple variables pour garder une trace de l'état du programme
+ en plus de jouer avec des intervalles de temps.
 
-Figurez-vous qu'en Progrmmation Réactive cela est assez simple. En fait, [4 lignes de code](http://jsfiddle.net/staltz/4gGgs/27/). Réfléchir avec des diagrammes est le meilleur moyen de réfléchir aux flux que vous soyez un expert ou un débutant.
+Figurez-vous qu'en Programmation Réactive cela est assez simple.
+En fait, [4 lignes de code](http://jsfiddle.net/staltz/4gGgs/27/).
+Réfléchir avec des diagrammes est le meilleur moyen de réfléchir
+aux flux que vous soyez un expert ou un débutant.
 
 ![Multiple clicks stream](http://i.imgur.com/HMGWNO5.png)
 
-Les boîtes grises sont les fonctions qui transforme en flux vers un nouveau flux. Pour aller à l'essentiel, au début nous accummulons les cliques à intervalles de `250ms`, c'est ce que fait `buffer(stream.throttle(250ms)`. Le résultat est un flux de listes, sur lequel nous appliquons la fonction `map()` afin de transformer chaque liste en la valeur de sa longueur (nombre d'élément dans la liste). Finalement, nous ignorons les valeurs inférieures à 2 avec `filter(x >= 2)`. C'est tout : 3 opérations pour produire le flux désiré. Il est désormais possible de s'abonner aux flux résultant et de réagir adéquatement.
+Les boîtes grises sont les fonctions qui transforment en flux vers un nouveau flux.
+Pour aller à l'essentiel, au début nous accummulons les cliques à intervalles de `250ms`,
+c'est le but de `buffer(stream.throttle(250ms)`. Le résultat est un flux de listes,
+sur lequel nous appliquons la fonction `map()` afin de transformer chaque liste
+en la valeur de sa longueur (nombre d'éléments dans la liste).
+Finalement, nous ignorons les valeurs inférieures à 2 avec `filter(x >= 2)`.
+C'est tout : 3 opérations pour produire le flux désiré.
+Il est désormais possible de s'abonner aux flux résultant et de réagir adéquatement.
 
 # "Pourquoi devrais je considérer d'adopter la Programmation Réactive ?"
 
-La Programmation Réactive améliore l'abstraction du code afin que nous puissions nous concentrer sur les interdépendances d'évènements définis par la logique métier plutôt d'avoir à constamment gérer les détails d'implémentation. Un Programme Réactif est souvent plus conçi.
+La Programmation Réactive améliore l'abstraction du code afin que nous puissions
+nous concentrer sur les interdépendances d'évènements définis par la logique métier
+plutôt que d'avoir à constamment gérer les détails d'implémentation.
+Un Programme Réactif est souvent plus conçi.
 
-Le bénéfice est plus évident encore dans les applications webs moderne qui sont hautement intéractive avec une mutlitude d'évènements utilisateurs à manipuler. Il y à 10 ans, les intéraction d'une page web consistait à soumettre un formulaire et réaliser de simples opérations de rendus. Nos applications ont évoluées pour s'executer en temps réél : la modification d'un champ de formulaire peut générer l'envoi automatique d'une validation sur le serveur, cliquer sur un bouton "j'aimes" peut être partagé en temps réél avec les autres visiteurs, etc.
+Le bénéfice est plus évident encore dans les applications webs moderne qui sont
+hautement intéractive avec une mutlitude d'évènements utilisateurs à manipuler.
+Il y a 10 ans, les intéractions d'une page web consistaient à soumettre un formulaire
+et réaliser de simples opérations de rendu.
+Nos applications ont évoluées pour s'executer en temps réél :
+la modification d'un champ de formulaire peut générer l'envoi automatique
+d'une validation sur le serveur, cliquer sur un bouton "j'aimes" peut être
+partagé en temps réél avec les autres visiteurs, etc.
 
-Les applications modernes abondent d'évènements en temps réél de toutes sortes afin de créer une meilleure expérience utilisateur. Nous avons besoins d'outils pour faire face à cela, La Programmation Réactive est la réponse.
+Les applications modernes abondent d'évènements en temps réél de toutes sortes
+afin de créer une meilleure expérience utilisateur. Nous avons besoins d'outils
+pour faire face à cela, La Programmation Réactive est la réponse.
 
 # Réfléchir en Programmation Réactive par l'exemple
 
-Commençons des choses sérieux désormais. Un exemple concret avec un guide sur la manière de penser la Programmation Réactive. Aucun exemples de synthèses, pas de concepts à moité expliqué. A la fin de ce tutorial nous aurons implémenté un code fonctionnel, en comprenenant chaque composant.
+Commençons les choses sérieuses désormais. Un exemple concret avec un guide
+sur la manière de penser la Programmation Réactive. Aucun exemple de synthèse,
+pas de concept à moité expliqué. A la fin de ce tutorial nous aurons implémenté
+un code fonctionnel, en comprenenant chaque composant.
 
-J'ai choisit Javascript et RxJS comme outils pour cette démonstration, la raison : Javascript est le langage le populaire en ce moment, et la famille des librairies Rx* est disponible pour plusieurs langages (.NET, Java, Scala, Clojure, JavaScript, Ruby, Python, C++, Objective-C/Cocoa, Groovy, etc). Donc quelque votre outil, vous pourrez y apppliquer ce concepts.
+J'ai choisit Javascript et RxJS comme outils pour cette démonstration,
+la raison : Javascript est le langage le populaire en ce moment, par ailleurs
+la famille des librairies Rx* est disponible pour plusieurs langages
+(.NET, Java, Scala, Clojure, JavaScript, Ruby, Python, C++, Objective-C/Cocoa, Groovy, etc).
+Donc quelque soit votre outil, vous pourrez y apppliquer ces concepts.
 
 # Implémenter une boîte de suggestions "Qui suivre"
 
-Twitter possède cet élément d'UI qui vous donne de suggestions d'autres comptes que vous pourriez vouloir suivre :
+Twitter possède cet élément d'UI qui vous suggère
+d'autres comptes que vous pourriez vouloir suivre :
 
 ![Twitter Who to follow suggestions box](http://i.imgur.com/eAlNb0j.png)
 
-Nous nous appliquerons à reproduire ses fonctions principale, qui sont :
+Nous nous appliquerons à reproduire ces fonctions principale, qui sont :
 
   Au démarrage, charger la donné des comptes depuis l'API et afficher 3 résultats
   Au clique du bouton "Rafraîchir", charger 3 autres suggestions dans 3 lignes
-  Au clique du bouton "x" d'une ligne de suggestion, effacer cette suggestion et afficher une nouvelle
-  Chaque ligne affichera l'avatar et un lien vers le compte
+  Au clique du bouton "x" d'une ligne de suggestion, effacer cette suggestion et y afficher une nouvelle
+  Chaque ligne affichera l'avatar et un lien vers le compte suggérer
 
-Nous pouvons laisser de côté les autres fonctionnalités et boutons car ils ne sont pas primordiaux. Et plutôt que d'uiliser Twitter, qui à récemment restreint ces API, utilisons Github. Il y à une API Github pour obtenir la liste d'utilisateurs.
+Nous pouvons laisser de côté les autres fonctionnalités et boutons
+car ils ne sont pas primordiaux à notre découverte. Et plutôt que d'utiliser Twitter,
+qui à récemment restreint ces API, utilisons Github.
+Il y a une API Github pour obtenir la liste d'utilisateurs.
 
-Le code complet est déjà disponible à l'addresse http://jsfiddle.net/staltz/8jFJH/48/ au cas où vous voudriez d'ores et déjà y jeter un oeil.
+Le code complet est déjà disponible à l'addresse
+http://jsfiddle.net/staltz/8jFJH/48/ au cas où vous voudriez d'ores et déjà y jeter un oeil.
 
 # Requête et Réponse
 
-Comment résoudre ce prolbème avec Rx? Et bien, pour commencer, (presque) tout est un flux. C'est le mantra Rx. Commençons par le plus simple: "Au démarrage, charger 3 comptes depuis l'API". Rien de spécial ici, Il s'agit tout juste de (1) faire une requête, (2) obtenir la réponse, (3) afficher le résultat. C'est partit pour représenter notre requête comme un flux. Cela peut sembler excessif au début, mais il faut bien commencer quelque part, n'est ce pas ?
+Comment résoudre ce prolbème avec Rx?
+Et bien, pour commencer, (presque) tout est un flux. C'est le mantra Rx.
+Commençons par le plus simple: "Au démarrage, charger 3 comptes depuis l'API".
+Rien de spécial ici, il s'agit tout juste de (1) faire une requête,
+(2) obtenir la réponse, (3) afficher le résultat.
+C'est partit pour commencer à représenter nos requêtes comme un flux.
+Cela peut sembler excessif au début, mais il faut bien commencer quelque part, n'est ce pas ?
 
-Au démarrage nous devons exécuter une requête, donc si nous devions modéliser cela comme un flux, ce serait un flux qui n'émets qu'une valeur. Plus tard, nous le savons déjà, nous aurons de mulitples requêtes à réaliser, mais pour l'instant, concentrons nous sur 1 requête.
+Au démarrage nous devons exécuter une requête, donc si nous devions
+modéliser cela comme un flux, ce serait un flux qui n'émet qu'une valeur.
+Plus tard, nous le savons déjà, nous aurons de mulitples requêtes à réaliser,
+mais pour l'instant, concentrons nous sur 1 requête.
 
 ```
 --a------|->
@@ -195,14 +252,19 @@ Au démarrage nous devons exécuter une requête, donc si nous devions modélise
 Où a est une URL 'https://api.github.com/users'
 ```
 
-Il s'agit bien de vouloir exécuter les requetes d'un flux d'URL. A chaque fois qu'un évenement requête survient, il indique deux choses "quand" et "quoi". "quand" la requête doit être executée lorsqu'un évenement requête survient. "quoi" ce qui doit être obtenu : La chaîne de caractère de l'URL
+Il s'agit bien de vouloir exécuter les requetes d'un flux d'URL.
+A chaque fois qu'un évenement requête survient, il indique deux choses "quand" et "quoi".
+"quand" la requête doit être executée lorsqu'un évenement requête survient.
+"quoi" ce qui doit être obtenu : La chaîne de caractère de l'URL
 
 Créer ce genre de flux avec une seule valeur est très facile avec Rx*.
 ```javascript
 var requestStream = Rx.Observable.just('https://api.github.com/users');
 ```
 
-Cependant, ce n'est plus qu'un flux d'URL, qui ne fait rien de spécial, nous devons donc faire en sorte que quelque chose se produise lorsqu'une valeur est émise. Cela est possible en s'abonnant à ce flux.
+Cependant, ce n'est plus qu'un flux d'URL, qui ne fait rien de spécial,
+nous devons donc faire en sorte que quelque chose se produise
+lorsqu'une valeur est émise. Cela est possible en s'abonnant à ce flux.
 
 ```
 requestStream.subscribe(function(requestUrl) {
@@ -213,7 +275,11 @@ requestStream.subscribe(function(requestUrl) {
 }
 ```
 
-Notez que nous utilisons jQuery Ajax (que vous devriez déjà connaitre) pour implémenter la requête asynchrone. Cependant, Rx est justement là pour gérer l'asynchronicité des flux de données. Ne se pourrait il pas que la réponse de cette requête soit aussi un flux contenant les données reçues plus tard ? A un niveau conceptuel c'est exactement cela, jetons y un oeil.
+Notez que nous utilisons jQuery Ajax (que vous devriez déjà connaitre) pour
+implémenter la requête asynchrone. Cependant, Rx est justement là pour gérer
+l'asynchronicité des flux de données. Ne se pourrait il pas que la réponse de
+cette requête soit aussi un flux contenant les données reçues plus tard ?
+A un niveau conceptuel c'est exactement cela, jetons y un oeil.
 
 ```
 requestStream.subscribe(function(requestUrl) {
@@ -231,7 +297,9 @@ requestStream.subscribe(function(requestUrl) {
 }
 ```
 
-`Rx.Observable.create()` vous permet de créer votre propre flux personnalisé. Il implémente la mécanique nécessaire à la communication inter-flux (onNext(), onError()). Nous avons simplement encapsulé notre promesse jQuer Ajax. **Cela signifie t'il qu'un promesse est un `Observable` ?**
+`Rx.Observable.create()` vous permet de créer votre propre flux personnalisé.
+Il implémente la mécanique nécessaire à la communication inter-flux (onNext(), onError()).
+Nous avons simplement encapsulé notre promesse jQuery Ajax. **Cela signifie t'il qu'une promesse est un Sujet `Observable` ?**
 
 &nbsp;
 &nbsp;
@@ -243,13 +311,29 @@ requestStream.subscribe(function(requestUrl) {
 
 Oui.
 
-Un `Observable` est une promesse compatible `Promise++`. Avec Rx vous pouvez facilement convertir une Promesse vers un Observable ainsi `var stream = Rx.Observable.fromPromise(promise)`. La seule différence est que les `Observable` ne sont pas compatible avec `Promise/A+`, mais conceptuellement il n'y à pas de conflits. Une promesse est un `Observable` avec une seule valeur émise. Les flux Rx vont au délà des promesses en permettant de multiple valeurs.
+Un `Observable` est une promesse compatible `Promise++`.
+Avec Rx vous pouvez facilement convertir une Promesse vers un Sujet `Observable`
+de cette façon `var stream = Rx.Observable.fromPromise(promise)`.
+La seule différence est que les Sujets `Observable` ne sont pas compatible `Promise/A+`,
+mais conceptuellement il n'y à pas de conflits. Une promesse est un Sujet `Observable`
+avec une seule valeur en sortie.
+Les flux Rx vont au délà des Promesses en permettant de multiple valeurs de sortie.
 
-C'est pltôt cool, et cela montre que les `Observable` sont au moins aussi puissant que les Promesses. Donc si vous croyez la mode des Promesses, gardez les yeux ouverts sur ce que les `Observale` de Rx sont capable.
+C'est pltôt cool, et cela montre que les `Observable` sont au moins aussi puissant
+que les Promesses. Donc si vous croyez en la mode des Promesses,
+gardez les yeux ouverts sur ce que les `Observable` de Rx sont capable.
 
-Retournons à notre exemple, si vous être malin, vous avez déjà remarqué que nous avions un appel récursif à `subscribe()`, ce qui est à peu près un `callback hell`. Aussi, notez comme la création du flux `responseStream` est dépendant de `requestStream`. Comme vous l'avez lu plus tôt, Rx fournit des méthodes simple pour transformer et créer de nouveaux flux depuis ceux existant déjà, nous devrions donc faire cela.
+Retournons à notre exemple, si vous être malin, vous avez déjà remarqué que
+nous avions un appel récursif à `subscribe()`,
+ce qui est à peu près un `callback hell`. Aussi, notez comme la création du flux
+`responseStream` est dépendant du flux `requestStream`. Comme vous l'avez lu plus tôt,
+Rx fournit des méthodes simple pour transformer et créer de nouveaux flux
+depuis ceux déjà existant, nous devrions donc faire cela.
 
-La plus basique des fonctions que vous devez connaitre est `map(f)`, qui prend chaque valeur d'un flux A, execute `f()` dessus, et produit un flux de valeurs B. Si appliquions cela à notre flux de requête/réponse, nous pouvons transformer chaque URL en une promesse de réponse (déguisée en flux).
+La plus basique des fonctions que vous devez connaitre est `map(f)`,
+qui prend chaque valeur d'un flux A, execute `f()` dessus, et produit un flux de valeurs B.
+Si nous appliquions cela à notre flux de requête/réponse,
+nous pouvons transformer chaque URL en une Promesse de réponse (déguisée en flux).
 
 
 ```javascript
@@ -259,11 +343,21 @@ var responseMetastream = requestStream
   });
 ```
 
-Ainsi nous créons une nouvelle bête appelé un meta-flux: un flux de flux. Ne paniquez pas déjà. un meta-flux est un flux dont chaque valeur est un flux. Vous pouvez comprendre cela comme des pointeurs : Chaque valeur est un pointeur vers un autre flux. Dans notre exemple, chaque URL est transformée vers un pointeur de flux de promesse vers la réponse correspondante.
+Ainsi nous créons une nouvelle bête appelé un `meta-flux`: un flux de flux.
+Ne paniquez pas déjà. Un meta-flux est un flux dont chaque valeur est un flux.
+Vous pouvez comprendre cela comme des pointeurs : Chaque valeur est un pointeur vers un autre flux.
+ Dans notre exemple, chaque URL est transformée vers un pointeur de flux de
+ Promesse vers la réponse correspondante.
 
 ![Response metastream](http://i.imgur.com/HHnmlac.png)
 
-Un meta-flux de réponse semble confus, et ne nous aide pas du tout. Nous voudrions plus simplement un flux de réponses, où chaque valeur émises est un objet JSON, non pas une promesse d'objet JSON. Dites bonjour a Mr. Flatmap: une version de `map()` qui réduit un metaflux en emettant ur le flux principal tout ce que le flux secondaire emettra. Flatmap n'est pas un "fix" ou un bug, c'est un outil vraiment util pour gérer des réponses asynchrones avec Rx.
+Un meta-flux de réponse semble confus, et ne nous aide pas du tout.
+Nous voudrions plus simplement un flux de réponses, où chaque valeur émises
+est un objet JSON, non pas une Promesse d'objet JSON.
+Dites bonjour a Mr. `Flatmap`: une version de `map()` qui réduit un meta-flux en
+emettant sur le flux principal tout ce que le flux secondaire emettra.
+Flatmap n'est pas un "fix" ou un bug, c'est un outils vraiment utile pour
+gérer des réponses asynchrones avec Rx.
 
 
 ```javascript
@@ -275,17 +369,20 @@ var responseStream = requestStream
 
 ![Response stream](http://i.imgur.com/Hi3zNzJ.png)
 
-Cool. Et puisque le flux de reponse se comporte en fonction de notre flux de requete, si plus tard d'autres evenements devaient survenir dans ce flux, nous recevrions les réponses correspondantes à chacun de ce évenements, comme on peut sy' attendre :
+Cool. Et puisque le flux de reponse se comporte en fonction de notre flux de requete,
+si plus tard d'autres évènements devaient survenir dans ce flux,
+nous recevrons les réponses correspondante à chacun de ces évènements,
+comme on peut s'y attendre :
 
 
 ```
 requestStream:  --a-----b--c------------|->
 responseStream: -----A--------B-----C---|->
 
-(en minuscule les requetes, en majuscule les responses)
+(en minuscule les requêtes, en majuscule les responses)
 ```
 
-Désormais nous avons un flux de réponse, nous pouvons donc affiché les résultats :
+Désormais nous avons un flux de réponses, nous pouvons donc afficher les résultats :
 
 
 ```javascript
@@ -311,9 +408,18 @@ responseStream.subscribe(function(response) {
 
 ## Le bouton rafraîchir
 
-Je n'ai pas encore mentionnée que la réponse JSON est une liste de 100 utilisateurs. L'API ne nous autorise que de spécifier l'offset de la page, mais pas le nombre de reésultat, donc nous n'unitlisons que 3 lignes de la réponse et gâchons le reste des 97 lignes. Nous pouvons ignorer cela pour le moment, car plus tard nous utiliserons une technique afin de mettre en cache nos résultats.
+Je n'ai pas encore mentionné que la réponse JSON est une liste de 100 utilisateurs.
+L'API nous autorise à ne spécifier que l'offset de la page,
+et non le nombre de résultat, en conséquence nous n'unitilisons que 3 lignes de la réponse
+et gâchons le reste des 97 lignes.
+Nous pouvons ignorer cela pour le moment, car plus tard nous utiliserons
+une technique afin de mettre en cache nos résultats.
 
-A chaque fois que le bouton rafraîchir est cliqué, le flux de requete doit emettre une nouvelle URL, afin que nous puissions obtenir la réponse correspondante. nous avons besoins de deux choses : un flux de clique sur le bouton rafraichir (mantra: tout est flux), et aussi de changer le flux de requete afin de dépendre du flux de clique. Heureusement, RxJS fournit des outils pour créer des flux `Observable` depuis un évenement.
+A chaque fois que le bouton rafraîchir est cliqué, le flux de requête
+doit émettre une nouvelle URL, afin que nous puissions obtenir la réponse correspondante.
+Nous avons besoins de deux choses : un flux de clique sur le bouton rafraîchir (mantra: tout est flux),
+et aussi de changer le flux de requête afin de dépendre du flux de clique.
+Heureusement, RxJS fournit des outils pour créer des flux `Observable` depuis un évènement.
 
 
 ```javascript
@@ -321,7 +427,10 @@ var refreshButton = document.querySelector('.refresh');
 var refreshClickStream = Rx.Observable.fromEvent(refreshButton, 'click');
 ```
 
-Puisque le flux de clique n'emets pas de lui même une valeur d'URL pour l'API, nous devons tranformé la valeur du clique en URL. Changeons le flux de requete afin que le flux de rafraichissement transforme chaque clic en une URL d'API avec un paramètre aléatoire additionnel.
+Puisque le flux de clique n'émet pas de lui même une valeur d'URL pour l'API,
+nous devons tranformer la valeur du clique en URL.
+Changeons le flux de requête afin que le flux de rafraichissement transforme
+chaque clic en une URL d'API avec un paramètre aléatoire additionnel.
 
 
 ```javascript
@@ -332,7 +441,12 @@ var requestStream = refreshClickStream
   })
 ```
 
-Comme je suis stupide et que je n'ai pas de tests automatique, je vient juste casser une fonctionnalité implémentée autparavant. Aucune requete n'est plus émise au démarrage de l'applcication, cela ne se produit plus qu'au clique du bouton rafraichir. Argh. J'ai besoin ds deux comportements : Une requete doit être émise _soit_ lorsque le bouton rafraichir est cliqué _ou_ lorsque la page vient dêtre ouverte.
+Comme je suis stupide et que je n'ai pas de tests automatique,
+je vient juste casser une fonctionnalité implémentée autparavant.
+Aucune requête n'est plus émise au démarrage de l'application, cela ne se produit
+plus qu'au clique du bouton rafraîchir. Argh.
+J'ai besoin de deux comportements : Une requête doit être émise _soit_
+lorsque le bouton rafraîchir est cliqué _ou_ lorsque la page vient d'être ouverte.
 
 
 Nous savons déjà comment créer des flux pour chacun de ces cas :
@@ -347,7 +461,8 @@ var requestOnRefreshStream = refreshClickStream
 var startupRequestStream = Rx.Observable.just('https://api.github.com/users');
 ```
 
-Mais comment les "fusionner" en un seul flux ? Et bien il existe la méthode [`merge()`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypemergemaxconcurrent--other). Expliqué avec un diagramme, voilà ce qu'il se passe :
+Mais comment les "fusionner" en un seul flux ? Et bien il existe la méthode [`merge()`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypemergemaxconcurrent--other).
+Expliqué avec un diagramme, voilà ce qu'il se passe :
 
 ```
 flux A:   ---a--------e-----o----->
@@ -393,7 +508,13 @@ var requestStream = refreshClickStream
   .startWith('https://api.github.com/users');
 ```
 
-La méthode [`startWith()`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypestartwithscheduler-args) fait exactement ce que vous pensez que celle ci fait. Quel que soit la nature du flux, la valeur de sortie d'un flux créer avec `startWith(x)` sera `x` au début. Mais ce code n'est pas suffisament [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself), j'ai dupliqué l'URL de l'API. une manière de corriger cela est déplacer `startWith()` à côté du flux `refreshClickStream`, pour simplement simuler un clique de rafraichissement au démarrage de l'application.
+La méthode [`startWith()`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypestartwithscheduler-args)
+fait exactement ce que vous pensez que celle ci fait.
+Quel que soit la nature du flux, la valeur de sortie d'un flux créer avec `startWith(x)` sera `x` au début.
+Mais ce code n'est pas suffisament [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself),
+j'ai dupliqué l'URL de l'API. Une manière de corriger cela est de déplacer `startWith()`
+à côté du flux `refreshClickStream`, pour simplement simuler un clique de rafraîchissement
+au démarrage de l'application.
 
 
 ```javascript
@@ -404,11 +525,20 @@ var requestStream = refreshClickStream.startWith('startup click')
   });
 ```
 
-Cool. Maintenant si vous comparez avec le moment où j'avais cassé les tests automatique, vous devriez constater que la seule différence avec cette dernière approche se résume à l'ajout de `startWith()`.
+Cool. Maintenant si vous comparez avec le moment où
+j'avais cassé les tests automatique, vous devriez constater que
+la seule différence avec cette dernière approche se résume à l'ajout de `startWith()`.
 
 ## Modélisons les 3 flux de suggestions
 
-Jusqu'à maintenant, nous n'avons implémenté que les étapes nécessaire à l'affichage des réponses consécutive à l'abonnement de notre flux de réposne `responseStream`. Depuis que nosu avons le bouton rafraichir, un nouveau probleme est apparu: Des que vous cliquez 'rafraichir', les 3 suggestions exsitantes ne sont pas effacées. Aussi, les nouvelles suggestions n'apparaissent qu'après avoir reçut les réponses des requetes correspondante. Pour rendre l'interface cool, nous devons effacer les suggestions existantes lorsqu'un clique du bouton rafraichir survient.
+Jusqu'à maintenant, nous n'avons implémenté que les étapes nécessaire à
+l'affichage des réponses consécutive à l'abonnement de notre flux de réponses `responseStream`.
+Depuis que nous avons le bouton rafraîchir, un nouveau probleme est apparu:
+Dès que vous cliquez sur le bouton 'rafraichir', les 3 suggestions existante
+ne sont pas effacées. Aussi, les nouvelles suggestions n'apparaissent qu'après
+avoir reçut les réponses des requêtes correspondante.
+Pour rendre l'interface cool, nous devons effacer les suggestions
+existantes lorsqu'un clique du bouton rafraichir survient.
 
 
 ```javascript
@@ -417,7 +547,11 @@ refreshClickStream.subscribe(function() {
 });
 ```
 
-Pas si vite l'amie. C'est une mauvaise pratique car désormais nous avons **deux** flux abonnés qui modifient les suggestions dans le DOM (l'autre étant abonné à `responseStream.subscribe()`), et cela ne semble pas très solide au regard de la [Separation des responsabilités](https://en.wikipedia.org/wiki/Separation_of_concerns). vous souvenez vous du mantra Rx ?
+Pas si vite l'ami. C'est une mauvaise pratique car désormais nous avons
+**deux** flux abonnés qui modifient les suggestions dans le DOM
+(l'autre étant abonné à `responseStream.subscribe()`), et cela ne semble
+pas très solide au regard de la [Separation des responsabilités](https://en.wikipedia.org/wiki/Separation_of_concerns).
+Vous souvenez vous du mantra Rx ?
 
 &nbsp;
 &nbsp;
@@ -426,7 +560,10 @@ Pas si vite l'amie. C'est une mauvaise pratique car désormais nous avons **deux
 
 ![Mantra](http://i.imgur.com/AIimQ8C.jpg)
 
-Nous allons donc modeler nos suggestions en tant que flux, où chaque valeur émise est un objet JSON content les données de la suggestion. Nous allons créer un flux pour chacune des suggestions à afficher. Voici comment le flux de suggestion #1 pourrait être :
+Nous allons donc modeler nos suggestions en tant que flux, où chaque valeur
+émise est un objet JSON contenant les données de la suggestion.
+Nous allons créer un flux pour chacune des suggestions à afficher.
+Voici comment le flux de suggestion #1 pourrait être :
 
 ```javascript
 var suggestion1Stream = responseStream
